@@ -1,20 +1,17 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/leiningen
-    docker:
-      - image: clojure:lein-2.8.1
-    steps:
-      - checkout
-      - restore_cache:
-          key: << checksum "project.clj" >>
-      - run:
-          working_directory: ~/leiningen/leiningen-core
-          command: lein bootstrap
-      - run: bin/lein test
-      - save_cache:
-          paths:
-            - $HOME/.m2
-            - $HOME/.lein
-          key: << checksum "project.clj" >>
+version: 2.1
 
+orbs:
+  orb-tools: circleci/orb-tools@volatile
+workflows:
+  btd:
+    jobs:
+    - orb-tools/validate-orb:
+        orb-path: ./.circleci/orb.yml # relative to root, not to config
+        workspace-path: ./workspace/
+    - orb-tools/publish-dev-orb:
+        namespace: circleci
+        orb-name: hello-build
+        label: ${CIRCLE_BRANCH}
+        dev-token-variable: "$CIRCLECI_DEV_API_TOKEN"
+        workspace-path: ./workspace/
+        requires: [orb-tools/validate-orb]
