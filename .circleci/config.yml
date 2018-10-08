@@ -11,7 +11,7 @@ jobs:
       wd: ~/leiningen
     steps:
       - clojure/cached_test:
-          restore_key: << checksum "project.clj" >>
+          restore_key: \<< checksum "project.clj" >>
           pre_test_steps:
             - run:
                 working_directory: ~/leiningen/leiningen-core
@@ -22,4 +22,4 @@ jobs:
                 paths:
                 - $HOME/.m2
                 - $HOME/.lein
-                key: << checksum "project.clj" >>
+                key: \<< checksum "project.clj" >>
