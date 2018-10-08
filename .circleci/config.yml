@@ -1,20 +1,25 @@
-version: 2
+version: 2.1
+
+orbs:
+  clojure: hannah/clojure@dev:test
+
 jobs:
   build:
-    working_directory: ~/leiningen
-    docker:
-      - image: clojure:lein-2.8.1
+    executor:
+      name: clojure/generic_exec
+      docker_image: clojure:lein-2.8.1
+      wd: ~/leiningen
     steps:
-      - checkout
-      - restore_cache:
-          key: << checksum "project.clj" >>
-      - run:
-          working_directory: ~/leiningen/leiningen-core
-          command: lein bootstrap
-      - run: bin/lein test
-      - save_cache:
-          paths:
-            - $HOME/.m2
-            - $HOME/.lein
-          key: << checksum "project.clj" >>
-
+      - clojure/cached_test:
+          restore_key: << checksum "project.clj" >>
+          pre_test_steps:
+            - run:
+                working_directory: ~/leiningen/leiningen-core
+                command: lein bootstrap
+          test_str: "bin/lein test"
+          post-steps:
+            - save_cache:
+                paths:
+                - $HOME/.m2
+                - $HOME/.lein
+                key: << checksum "project.clj" >>
