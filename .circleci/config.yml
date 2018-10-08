@@ -17,9 +17,9 @@ jobs:
                 working_directory: ~/leiningen/leiningen-core
                 command: lein bootstrap
           test_str: "bin/lein test"
-          post-steps:
-            - save_cache:
-                paths:
-                - $HOME/.m2
-                - $HOME/.lein
-                key: \<< checksum "project.clj" >>
+      - save_cache:
+          paths:
+          - $HOME/.m2
+          - $HOME/.lein
+          key: \<< checksum "project.clj" >>
+
