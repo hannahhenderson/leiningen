@@ -26,7 +26,8 @@ orbs:
           docker_image:
             type: string
             default: "circleci/clojure:lein"
-        executor: generic_exec
+        executor:
+          name: generic_exec
           wd: << parameters.wd >>
           docker_image: << parameters.docker_image >>
         steps:
@@ -58,10 +59,11 @@ orbs:
         parameters:
           wd:
             type: string
+            default: foo
           docker_image:
             type: string
-            default: "circleci/clojure:lein"
-        working_directory: <<parameters.wd>>
+            default: foobar
+        working_directory: << parameters.wd >>
         docker:
           - image: <<parameters.docker_image>>
       my_inline_executor:
