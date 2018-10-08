@@ -2,11 +2,44 @@ version: 2.1
 orbs:
   inline_example:
     jobs:
+      generic_job:
+        parameters:
+          restore_key:
+              type: string
+              default: "<< checksum \"project.clj\" >>"
+          test_str:
+              type: string
+              default: "lein test"
+          test_directory:
+              type: string
+              default: ""
+          save_key:
+            type: string
+            default: "<< checksum \"project.clj\" >>"
+          save_paths:
+            type: steps
+            default:
+              - ~/.m2
+          wd:
+            type: string
+          docker_image:
+            type: string
+        executor: generic_exec
+          wd: << parameters.wd >>
+          docker_image: << parameters.docker_image >>
+        steps:
+          - checkout
+          - restore_cache:
+              key: << parameters.restore_key >>
+          - run: << parameters.test_str >>
+          - save_cache:
+              key: << parameters.save_key >>
+              paths: << parameters.save_paths >>
       my_inline_job:
         parameters:
           greeting_name:
             type: string
-            default: olleh
+            default: olleh # is this a typo? or does this work?
         executor: my_inline_executor
         steps:
         - my_inline_command:
@@ -19,6 +52,16 @@ orbs:
         steps:
         - run: echo "hello <<parameters.name>>, from the inline command"
     executors:
+      generic_exec:
+        parameters:
+          wd:
+            type: string
+          docker_image:
+            type: string
+            default: "circleci/clojure:lein"
+        working_directory: <<parameters.wd>>
+        docker:
+          - image: <<parameters.docker_image>>
       my_inline_executor:
         parameters:
           version:
