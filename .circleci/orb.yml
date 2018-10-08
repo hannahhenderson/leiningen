@@ -22,10 +22,8 @@ orbs:
               - ~/.m2
           wd:
             type: string
-            default: "~"
           docker_image:
             type: string
-            default: "circleci/clojure:lein"
         executor:
           name: generic_exec
           wd: << parameters.wd >>
@@ -59,10 +57,10 @@ orbs:
         parameters:
           wd:
             type: string
-            default: foo
+            default: ~
           docker_image:
             type: string
-            default: foobar
+            default: "circleci/clojure:lein"
         working_directory: << parameters.wd >>
         docker:
           - image: <<parameters.docker_image>>
